@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:opinion_rapida/pantallas/pantalla_votacion.dart';
 
 class InicioEncuesta extends StatelessWidget {
   const InicioEncuesta({super.key});
@@ -10,31 +10,29 @@ class InicioEncuesta extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Encuestas en Tiempo Real'),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('encuestas').snapshots(),
-        builder: (contexto, instantanea) {
-          if (instantanea.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (!instantanea.hasData || instantanea.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No hay encuestas disponibles'),
-            );
-          }
-          final encuestas = instantanea.data!.docs;
-          return ListView.builder(
-            itemCount: encuestas.length,
-            itemBuilder: (contexto, indice) {
-              final encuesta = encuestas[indice];
-              return ListTile(
-                title: Text(encuesta['titulo'] ?? 'Sin título'),
-                onTap: () {
-                  // Aquí puedes navegar a una pantalla de votación si lo deseas
-                },
-              );
-            },
-          );
-        },
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Puedes añadir el botón para navegar a la pantalla de votación
+            ElevatedButton(
+              onPressed: () {
+                // Crear un ID ficticio para la encuesta, puedes cambiarlo según sea necesario
+                String encuestaId = 'encuesta_prueba_id_123';
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PantallaVotacion(
+                      encuestaId: encuestaId, // Pasamos el ID ficticio
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Ir a Votación'),
+            ),
+          ],
+        ),
       ),
     );
   }
