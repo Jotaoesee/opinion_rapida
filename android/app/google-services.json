@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "146420619191",
+    "project_id": "opinionrapida",
+    "storage_bucket": "opinionrapida.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146420619191:android:e353071c88b30af40bfa32",
+        "android_client_info": {
+          "package_name": "com.example.opinion_rapida"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXK6IRpzg8ACL57QWUk4n-Kj7tkJNrmuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
