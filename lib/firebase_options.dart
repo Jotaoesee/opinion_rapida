@@ -20,10 +20,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -62,4 +59,15 @@ class DefaultFirebaseOptions {
     storageBucket: 'opinionrapida.firebasestorage.app',
     iosBundleId: 'com.example.opinionRapida',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyBJn9zrke3D4Moh0xDhQp4gagx3mKgfk5s',
+    appId: '1:146420619191:web:7d90bfc441f2286c0bfa32',
+    messagingSenderId: '146420619191',
+    projectId: 'opinionrapida',
+    authDomain: 'opinionrapida.firebaseapp.com',
+    storageBucket: 'opinionrapida.firebasestorage.app',
+    measurementId: 'G-QZB4PFCJ8W',
+  );
+
 }
