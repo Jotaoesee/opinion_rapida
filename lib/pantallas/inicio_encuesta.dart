@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:opinion_rapida/pantallas/crear_encuesta.dart';
-import 'package:opinion_rapida/pantallas/pantalla_votacion.dart';
+import 'package:opinion_rapida/pantallas/lista_encuesta.dart';
 
 class InicioEncuesta extends StatelessWidget {
   const InicioEncuesta({super.key});
@@ -54,17 +54,17 @@ class InicioEncuesta extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CrearEncuesta(),
+                        builder: (context) => const CrearEncuesta(),
                       ),
                     );
                   },
                 ),
                 const SizedBox(height: 20),
-                // Botón para ir a votación
+
+                // Botón para ver listado de encuestas
                 ElevatedButton.icon(
-                  icon:
-                      const Icon(Icons.ballot), // Ícono de "votación" (balota)
-                  label: const Text('Ir a Votación'),
+                  icon: const Icon(Icons.list), // Ícono de "lista"
+                  label: const Text('Ver Encuestas'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -75,16 +75,13 @@ class InicioEncuesta extends StatelessWidget {
                           color: Colors.teal, width: 2), // Borde
                     ),
                     textStyle: const TextStyle(fontSize: 18),
-                    elevation: 5, // Sombra al botón
+                    elevation: 5,
                   ),
                   onPressed: () {
-                    String encuestaId = 'encuesta_prueba_id_123';
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PantallaVotacion(
-                          encuestaId: encuestaId,
-                        ),
+                        builder: (context) => const ListaEncuesta(),
                       ),
                     );
                   },

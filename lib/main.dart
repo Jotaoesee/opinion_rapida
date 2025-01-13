@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:opinion_rapida/pantallas/inicio_encuestas.dart';
+import 'package:opinion_rapida/pantallas/inicio_encuesta.dart';
 import 'firebase_options.dart';
 
 void main() async {

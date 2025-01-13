@@ -5,34 +5,48 @@ class CrearEncuesta extends StatefulWidget {
   const CrearEncuesta({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CrearEncuestaState createState() => _CrearEncuestaState();
 }
 
 class _CrearEncuestaState extends State<CrearEncuesta> {
+  final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _opcionesController = TextEditingController();
 
   void _crearEncuesta() async {
+    final nombre = _nombreController.text;
     final titulo = _tituloController.text;
     final opciones = _opcionesController.text
         .split(',')
         .map((opcion) => opcion.trim())
+        .where((opcion) => opcion.isNotEmpty)
         .toList();
 
-    if (titulo.isNotEmpty && opciones.isNotEmpty) {
-      await FirebaseFirestore.instance.collection('encuestas').add({
-        'titulo': titulo,
-        'opciones': opciones,
-        'votos': {for (var opcion in opciones) opcion: 0},
-      });
+    if (nombre.isEmpty || titulo.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, completa todos los campos.')),
+      );
+      return;
+    }
 
-      // ignore: use_build_context_synchronously
+    if (opciones.length != 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, proporciona exactamente 4 opciones.'),
+        ),
+      );
+      return;
+    }
+
+    await FirebaseFirestore.instance.collection('encuestas').add({
+      'creador': nombre,
+      'titulo': titulo,
+      'opciones': opciones,
+      'votos': {for (var opcion in opciones) opcion: 0},
+    });
+
+    if (context.mounted) {
       Navigator.pop(context); // Regresar al listado de encuestas
-    } else {
-      // Mostrar un error si los campos están vacíos
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Por favor, ingresa un título y opciones válidas')));
     }
   }
 
@@ -65,6 +79,20 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Campo de texto para el nombre del creador
+                TextField(
+                  controller: _nombreController,
+                  decoration: const InputDecoration(
+                    labelText: 'Tu nombre',
+                    labelStyle: TextStyle(color: Colors.black),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 // Campo de texto para el título de la encuesta
                 TextField(
                   controller: _tituloController,
