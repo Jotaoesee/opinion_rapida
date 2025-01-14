@@ -5,6 +5,7 @@ class CrearEncuesta extends StatefulWidget {
   const CrearEncuesta({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CrearEncuestaState createState() => _CrearEncuestaState();
 }
 
@@ -12,6 +13,7 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _tituloController = TextEditingController();
   final TextEditingController _opcionesController = TextEditingController();
+  bool _isLoading = false; // Indicador de carga
 
   void _crearEncuesta() async {
     final nombre = _nombreController.text;
@@ -38,15 +40,41 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
       return;
     }
 
-    await FirebaseFirestore.instance.collection('encuestas').add({
-      'creador': nombre,
-      'titulo': titulo,
-      'opciones': opciones,
-      'votos': {for (var opcion in opciones) opcion: 0},
+    // Mostrar indicador de carga mientras se crea la encuesta
+    setState(() {
+      _isLoading = true;
     });
 
-    if (context.mounted) {
-      Navigator.pop(context); // Regresar al listado de encuestas
+    try {
+      // Paso 1: Obtener una referencia al documento que se creará
+      final encuestaRef =
+          FirebaseFirestore.instance.collection('encuestas').doc();
+
+      // Agregar encuesta a Firestore
+      await encuestaRef.set({
+        'creador': nombre,
+        'titulo': titulo,
+        'opciones': opciones, // Se guarda como una lista en Firestore
+        'votos':
+            List.filled(opciones.length, 0), // Lista de votos inicializados a 0
+      });
+
+      if (context.mounted) {
+        // Regresar al listado de encuestas después de crearla
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      // Mostrar mensaje de error si ocurre algún problema con Firebase
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al crear la encuesta: $e')),
+      );
+    } finally {
+      // Ocultar indicador de carga
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -54,7 +82,7 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal, // Color de fondo del AppBar
+        backgroundColor: Colors.teal,
         title: const Text(
           'Crear Encuesta',
           style: TextStyle(
@@ -62,7 +90,7 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
             fontSize: 22,
           ),
         ),
-        centerTitle: true, // Centrar el título
+        centerTitle: true,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -111,7 +139,7 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
                 TextField(
                   controller: _opcionesController,
                   decoration: const InputDecoration(
-                    labelText: 'Opciones separadas por coma',
+                    labelText: 'Opciones separadas por coma (4 opciones)',
                     labelStyle: TextStyle(color: Colors.black),
                     filled: true,
                     fillColor: Colors.white,
@@ -123,22 +151,27 @@ class _CrearEncuestaState extends State<CrearEncuesta> {
                 const SizedBox(height: 20),
                 // Botón para crear encuesta
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.add), // Ícono de "agregar"
+                  icon: const Icon(Icons.add),
                   label: const Text('Crear Encuesta'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                    foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
-                      side: const BorderSide(
-                          color: Colors.teal, width: 2), // Borde
+                      side: const BorderSide(color: Colors.teal, width: 2),
                     ),
                     textStyle: const TextStyle(fontSize: 18),
-                    elevation: 5, // Sombra al botón
+                    elevation: 5,
                   ),
-                  onPressed: _crearEncuesta,
+                  onPressed: _isLoading
+                      ? null
+                      : _crearEncuesta, // Desactivar botón si está cargando
                 ),
+                if (_isLoading)
+                  const Center(
+                      child:
+                          CircularProgressIndicator()), // Mostrar indicador de carga
               ],
             ),
           ),
